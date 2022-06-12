@@ -44,6 +44,7 @@ ui <- fluidPage(
   DTOutput("dataset"),
   
   hr(),
+  tags$a(href="https://github.com/da11an/UHK_delivery_models", "Code available on Github"),
   tags$a(href="https://blog.hxv.me/uhk-shipping-progress/", "Also check out UHK Shipping progress site")
 )
 
