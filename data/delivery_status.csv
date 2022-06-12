@@ -1,0 +1,34 @@
+post_date,order,type,ship_date,source
+2022-02-01,9513,shipping-next,2022-02-01,uhk via archive.org
+2022-02-01,12050,last-order,2022-05-28,uhk via archive.org
+2022-02-28,10029,shipping-next,2022-02-28,uhk via archive.org
+2022-02-28,12242,last-order,2022-05-28,uhk via archive.org
+2022-03-09,10180,shipping-next,2022-03-09,uhk via archive.org
+2022-03-09,12325,last-order,2022-05-28,uhk via archive.org
+2022-03-11,10267,shipping-next,2022-03-11,uhk via archive.org
+2022-03-11,12332,last-order,2022-05-28,uhk via archive.org
+2022-03-14,10304,shipping-next,2022-03-14,uhk via archive.org
+2022-03-14,12375,last-order,2022-05-28,uhk via archive.org
+2022-03-21,10304,shipping-next,2022-03-21,uhk via archive.org
+2022-03-21,12375,last-order,2022-05-28,uhk via archive.org
+2022-05-03,10304,shipping-next,2022-05-03,uhk via archive.org
+2022-05-03,12770,last-order,2022-07-28,uhk via archive.org
+2022-05-23,10436,shipping-next,2022-05-23,uhk
+2022-05-23,12917,last-order,2022-07-28,uhk
+2022-06-06,10436,shipping-next,2022-06-06,uhk
+2022-06-06,13020,last-order,2022-09-28,uhk
+2021-12-12,8298,shipping-next,2021-12-12,twitter@danpalmer
+2021-12-30,8752,shipping-next,2021-12-30,twitter@danpalmer
+2022-01-09,8876,shipping-next,2022-01-09,twitter@danpalmer
+2022-01-16,9146,shipping-next,2022-01-16,twitter@danpalmer
+2022-01-26,9412,shipping-next,2022-01-26,twitter@danpalmer
+2022-01-29,9513,shipping-next,2022-01-29,twitter@danpalmer
+2022-02-05,9622,shipping-next,2022-02-05,twitter@danpalmer
+2022-02-13,9681,shipping-next,2022-02-13,twitter@danpalmer
+2022-02-21,9745,shipping-next,2022-02-21,twitter@danpalmer
+2022-02-26,9936,shipping-next,2022-02-26,twitter@danpalmer
+2022-02-28,10029,shipping-next,2022-02-28,twitter@danpalmer
+2022-03-08,10180,shipping-next,2022-03-08,twitter@danpalmer
+2022-03-11,10267,shipping-next,2022-03-11,twitter@danpalmer (adjusted date 2022-03-09 to 2022-03-11 to match archive.org)
+2022-03-14,10304,shipping-next,2022-03-14,twitter@danpalmer
+2022-06-11,10706,shipping-next,2022-06-11,twitter@danpalmer
