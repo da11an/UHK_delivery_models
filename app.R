@@ -45,6 +45,7 @@ ui <- fluidPage(
   
   hr(),
   tags$a(href="https://github.com/da11an/UHK_delivery_models", "Code available on Github"),
+  br(),
   tags$a(href="https://blog.hxv.me/uhk-shipping-progress/", "Also check out UHK Shipping progress site")
 )
 
