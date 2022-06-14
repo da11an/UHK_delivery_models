@@ -33,7 +33,6 @@ logs_hxv <- cx$get("inputData") %>%
     source = "https://github.com/hxv/uhk-shipping-progress"
   )
 
-
 # numeric of dates for fitting models
 logs <- bind_rows(logs_local, logs_hxv) %>%
   mutate(
@@ -49,7 +48,7 @@ delivery_dates <- function(logs) {
     aes(x = order, y = ship_date, col = type) +
     geom_point(size = 3, alpha = .5) +
     geom_smooth(method = "lm", fullrange=TRUE) +
-    theme_bw(base_size = 14) +
+    theme_minimal(base_size = 14) +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
           legend.position = "bottom") +
     labs(title = "UHK Shipping Reports & Estimates",
@@ -58,9 +57,19 @@ delivery_dates <- function(logs) {
     xlab("Order Number") + ylab("Estimated Shipping Date")
   print(p)
 }
-  # if you're looking for a simple correction factor, add 6 months as of July 2022
-  # UHK predictions within 95% prediction interval based on historical data
-  # but dates a full year after UHK prediction are also within prediction band.
+
+delivery_dates_plus <- function(logs, order_num) {
+  my_preds <- preds(order_num) %>% rename(ship_date = .fitted)
+  
+  p <- delivery_dates(logs) +
+    geom_errorbar(data = my_preds,
+                  aes(x = order, y = ship_date, col = type, ymin = .lower, ymax = .upper), alpha = 0.7, size = 2) +
+    geom_point(data = my_preds, size = 2, shape = 21, fill = "black",
+               aes(x = order, y = ship_date, col = type)) +
+    ggrepel::geom_label_repel(data = my_preds,
+                              aes(x = order, y = ship_date, col = type, label = order), show.legend = FALSE)
+  print(p)  
+}
 
 # fit models by type
 regressions <- logs %>%
@@ -71,16 +80,6 @@ regressions <- logs %>%
     glanced = purrr::map(fit, broom::glance),
     augmented = purrr::map(fit, broom::augment, interval = "prediction")
   )
-
-# regressions %>% 
-#   unnest(tidied)
-# 
-# regressions %>% unnest(augmented)
-# 
-# regressions %>% 
-#   unnest(tidied) %>%
-#   mutate(estimate_date = as.Date(estimate, origin = "1970-01-01"),
-#          estimate_uhk_day = 1/estimate)
 
 preds <- function(order) {
   regressions %>%

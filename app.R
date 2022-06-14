@@ -9,50 +9,73 @@
 
 library(shiny)
 library(DT)
+library(shinythemes)
 
-# Define UI for application that draws a histogram
-ui <- fluidPage(
+ui <- function(request) {fluidPage(
+  theme = shinytheme("flatly"),
   
   # Application title
   titlePanel("UHK Delivery Status Predictor"),
   
-  
-  h2("Order Delivery Prediction"),
-  numericInput("your_order",
-               "Enter Order Number:",
-               value = logs %>% filter(type=="last-order") %>% pull(order) %>% max()),
-  
-  DTOutput("order_pred"),
-  helpText("Linear model fits are presented for (1a) UHK-reported `shipping-next`
+  tabsetPanel(
+    tabPanel(
+      title = "Prediction",
+     h3("Order Delivery Prediction"),
+      numericInput("your_order",
+                   "Enter Order Number:",
+                   value = logs %>% filter(type=="last-order") %>% pull(order) %>% max()),
+      
+      plotOutput("deliveryDates"),
+      
+      DTOutput("order_pred")
+    ),
+    tabPanel(
+      title = "Data",
+     h3("Reference table"),
+      DTOutput("refTable"),
+      
+     h3("Dataset"),
+      DTOutput("dataset"),
+      
+      p("Data from:",
+        tags$ul(
+          tags$li("https://ultimatehackingkeyboard.com/delivery-status"),
+          tags$li("https://github.com/hxv/uhk-shipping-progress"),
+          tags$li("UHK via https://archive.org/"),
+          tags$li("@danpalmer (twitter)")
+      )),
+      
+      p("For UHK last-order model, predictions for a given month were assigned
+        to the 28th of that month.")
+    ),
+    tabPanel(
+      title = "Code & Details",
+      helpText("Linear model fits are presented for (1a) UHK-reported `shipping-next`
       dates; (1b) non-black variant keyboards;
       and (2) UHK-estimated shipping dates for the `last-order` received.
       The `shipping-next` model bases expectations for the future on past
       shipping info. The `last-order` model reflects UHK's historical delivery
       predictions for new orders."),
-  helpText("95% prediction intervals are given for both models providing lower and
+      helpText("95% prediction intervals are given for both models providing lower and
       upper estimates. 19 times out of 20, new data would fall between those 
       bounds if deviations from the mean were normally distributed (they're not)."),
-  
-  hr(),
-  h2("General Data"),
-  plotOutput("deliveryDates"),
-  
-  h2("Reference table"),
-  DTOutput("refTable"),
-  
-  h2("Dataset"),
-  DTOutput("dataset"),
-  
-  hr(),
-  tags$a(href="https://github.com/da11an/UHK_delivery_models", "Code available on Github"),
-  br(),
-  tags$a(href="https://blog.hxv.me/uhk-shipping-progress/", "Also check out UHK Shipping progress site")
-)
+      
+      hr(),
+      
+      tags$a(href="https://github.com/da11an/UHK_delivery_models", "Code available on Github"),
+      br(),
+      tags$a(href="https://blog.hxv.me/uhk-shipping-progress/", "Also check out UHK Shipping progress site"),
+      
+      hr(),
+      
+      helpText("App updated 2022-06-14")
+    )
+  )
+)}
 
-# Define server logic required to draw a histogram
-server <- function(input, output) {
+server <- function(input, output, session) {
   
-  output$deliveryDates <- renderPlot({delivery_dates(logs)})
+  output$deliveryDates <- renderPlot({delivery_dates_plus(logs, input$your_order)})
   
   output$order_pred <- renderDT({
     DT::datatable(
@@ -67,9 +90,22 @@ server <- function(input, output) {
   })
   
   output$dataset <- renderDT({
-    datatable(logs %>% select(-post_num, -ship_num) %>% arrange(post_date),
+    datatable(logs %>% select(-post_num, -ship_num) %>% arrange(desc(post_date)),
               options = list(scrollX = TRUE))})
+  
+  # Automatically bookmark every time an input changes
+  observe({
+    # whitelist approach
+    toExclude <- setdiff(names(input), "your_order")
+    setBookmarkExclude(toExclude)
+    
+    # update bookmarks
+    reactiveValuesToList(input)
+    session$doBookmark()
+  })
+  # Update the query string
+  onBookmarked(updateQueryString)
 }
 
 # Run the application 
-shinyApp(ui = ui, server = server)
+shinyApp(ui = ui, server = server, enableBookmarking = "url")
