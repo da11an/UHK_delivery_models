@@ -98,13 +98,13 @@ ui <- function(request) {fluidPage(
 
 server <- function(input, output, session) {
   
-  observe({
-    updateNumericInput(
-      session,
-      "your_order",
-      value = min(max(11000, input$your_order), logs %>% filter(type=="last-order") %>% pull(order) %>% max() + 250)
-    )
-  })
+  # observe({
+  #   updateNumericInput(
+  #     session,
+  #     "your_order",
+  #     value = min(max(11000, input$your_order), logs %>% filter(type=="last-order") %>% pull(order) %>% max() + 250)
+  #   )
+  # })
   
   output$deliveryDates <- renderPlot({
     req(input$your_order)
