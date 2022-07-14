@@ -20,10 +20,33 @@ ui <- function(request) {fluidPage(
   tabsetPanel(
     tabPanel(
       title = "Prediction",
-     h3("Order Delivery Prediction"),
-      numericInput("your_order",
-                   "Enter Order Number:",
-                   value = logs %>% filter(type=="last-order") %>% pull(order) %>% max()),
+      numericInput(
+        "your_order",
+        "Enter Order Number:",
+        value = logs %>% filter(type=="last-order") %>% pull(order) %>% max(),
+        min = 11000,
+        max = logs %>% filter(type=="last-order") %>% pull(order) %>% max() + 250),
+      wellPanel(
+        fluidRow(
+          column(
+            width = 6,
+            strong("Projected Shipping Date"),
+            em(textOutput("delivery_prediction"))
+          ),
+          column(
+            width = 6,
+            strong("Weeks Delayed"),
+            em(textOutput("delay"))
+          )
+        )
+      ),
+      helpText("The projected shipping date is based on fitting a straight line
+               through historical shipping data. The delay is determined by
+               comparing the projected shipping date to a straight line fit
+               through UHK's rough shipping estimates for newly placed orders.")
+    ),
+    tabPanel(
+      title = "Data Fitting",
       
       plotOutput("deliveryDates"),
       
@@ -75,9 +98,46 @@ ui <- function(request) {fluidPage(
 
 server <- function(input, output, session) {
   
-  output$deliveryDates <- renderPlot({delivery_dates_plus(logs, input$your_order)})
+  observe({
+    updateNumericInput(
+      session,
+      "your_order",
+      value = min(max(11000, input$your_order), logs %>% filter(type=="last-order") %>% pull(order) %>% max() + 250)
+    )
+  })
+  
+  output$deliveryDates <- renderPlot({
+    req(input$your_order)
+    delivery_dates_plus(logs, input$your_order)
+  })
+  
+  output$delivery_prediction <- renderText({
+    req(input$your_order)
+    preds(input$your_order) %>%
+      filter(type == "shipping-next") %>%
+      pull(.fitted) %>%
+      format("%B %d, %Y")
+  })
+  
+  output$delivery_prediction <- renderText({
+    req(input$your_order)
+    preds(input$your_order) %>%
+      filter(type == "shipping-next") %>%
+      pull(.fitted) %>%
+      format("%B %d, %Y")
+  })
+  
+  output$delay <- renderText({
+    req(input$your_order)
+    preds(input$your_order) %>%
+      filter(type %in% c("shipping-next", "last-order")) %>%
+      pull(.fitted, type) %>%
+      (function(x) difftime(x['shipping-next'], x['last-order'], units = "weeks")) %>%
+      round()
+  })
   
   output$order_pred <- renderDT({
+    req(input$your_order)
     DT::datatable(
       preds(input$your_order) %>% rename(model = type),
       options = list(dom = 't', scrollX = TRUE)

@@ -9,7 +9,7 @@ library(purrr)
 library(V8)
 
 # read data and augment ----
-logs_local <- readr::read_csv("data/delivery_status.csv")
+logs_local <- readr::read_csv("data/delivery_status.csv", col_types = "DicDc")
 
 # read hxv data
 # https://github.com/hxv/uhk-shipping-progress

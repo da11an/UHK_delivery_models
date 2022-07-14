@@ -32,3 +32,9 @@ post_date,order,type,ship_date,source
 2022-03-11,10267,shipping-next,2022-03-11,twitter@danpalmer (adjusted DRP)
 2022-03-14,10304,shipping-next,2022-03-14,twitter@danpalmer
 2022-06-11,10704,shipping-next,2022-06-11,twitter@danpalmer (adjusted DRP)
+2022-06-18,13100,last-order,2022-09-28,uhk
+2022-06-25,13140,last-order,2022-09-28,uhk
+2022-06-30,13161,last-order,2022-10-28,uhk
+2022-07-03,13186,last-order,2022-10-28,uhk
+2022-07-10,11292,shipping-next,2022-07-10,uhk
+2022-07-10,13218,last-order,2022-10-28,uhk
