@@ -91,7 +91,7 @@ ui <- function(request) {fluidPage(
       
       hr(),
       
-      helpText("App updated 2022-06-14")
+      helpText("App updated 2022-07-14")
     )
   )
 )}
